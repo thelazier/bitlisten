@@ -139,7 +139,8 @@ Sound.change = function(instrument_number) {
 		currentSound = sound1;
 		currentSwells = swells1;
 		SOUND_DONATION_ADDRESS = "144b31mmaWQVDQFiUPo6HEzxc2Dm83WXrW";
-		$('#musicianDonation').html(musicianString + "<span>" + SOUND_DONATION_ADDRESS + "</span>");
+		$('#musicianDonation').html(musicianString + "<span qrtarget=\"bitcoin:" +
+			SOUND_DONATION_ADDRESS + "\">" + SOUND_DONATION_ADDRESS + "</span>");
 	}
     // INSTRUMENT 2
 	else if (instrument_number === 2) {
@@ -168,7 +169,8 @@ Sound.change = function(instrument_number) {
 	    currentSound = sound2;
 		currentSwells = swells2;
 		SOUND_DONATION_ADDRESS = "1JFaYRGkDmhpSTbFKwqDWKr2ncvvrgYEAV";
-		$('#musicianDonation').html(musicianString + "<span>" + SOUND_DONATION_ADDRESS + "</span>");
+		$('#musicianDonation').html(musicianString + "<span qrtarget=\"bitcoin:" +
+			SOUND_DONATION_ADDRESS + "\">" + SOUND_DONATION_ADDRESS + "</span>");
 		}
 };
 

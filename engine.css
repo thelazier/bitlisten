@@ -37,6 +37,7 @@ a {
 .bitcoinsymbol {
     font-family: bitcoinsymbol;
     margin: 0 1px;
+	background-image: url('favicon.ico');
 }
 
 .interface {

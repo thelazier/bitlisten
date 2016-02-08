@@ -15,9 +15,9 @@ function Transaction(bitcoins, highlight, currency, currencyName) {
 	    var bitcoinString;
 	    
 	    if (bitcoinVal === "0.00") {
-	        bitcoinString = "&lt;<span class='bitcoinsymbol'>B</span>0.01";
+	        bitcoinString = "&lt;<span class='bitcoinsymbol'>&nbsp;&nbsp;&nbsp;</span>0.01";
 	    } else {
-	        bitcoinString = "<span class='bitcoinsymbol'>B</span>" + bitcoinVal;
+	        bitcoinString = "<span class='bitcoinsymbol'>&nbsp;&nbsp;&nbsp;</span>" + bitcoinVal;
 	    }
 	
 		if (!highlight) {

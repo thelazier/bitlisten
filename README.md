@@ -1,8 +1,7 @@
-## BitListen - Bitcoin Transaction Visualizer ##
+## Dash Transaction Visualizer ##
+Forked from [BitListen - Bitcoin Transaction Visualizer](https://github.com/MaxLaumeister/bitlisten)
 
-Current version hosted at [**BitListen.com**](http://bitlisten.com/). Project formerly known as "Listen to Bitcoin" (ListenToBitcoin.com has been sold.)
-
-Realtime Bitcoin transaction visualizer written in HTML/Javascript. See and hear new transactions and blocks as they propagate through the Bitcoin Network.
+Realtime Dash transaction visualizer written in HTML/Javascript. See and hear new transactions as they propagate through the Dash Network.
 
 ### Building ###
 
@@ -14,27 +13,29 @@ The project is built and ready-to-go in the dist folder. If you change any of th
 
 2. Cd into the project directory and run `npm install` to install the proper Grunt version and dependencies for this project.
 
-3. Run `grunt` to build BitListen. Alternatively, run `grunt watch` to build BitListen, host it at http://localhost:8000, and watch for and rebuild changes in the source files.
+3. Run `grunt` to build the project. Alternatively, run `grunt watch` to build the project, host it at http://localhost:8000, and watch for and rebuild changes in the source files.
 
 The compiled/minified script will be output to `bitlisten.min.js`.
 
 ### APIs and Libraries ###
 
-BitListen uses these libraries:
+This project uses these libraries:
 
 * [Howler.js](http://goldfirestudios.com/blog/104/howler.js-Modern-Web-Audio-Javascript-Library) by James Simpson
 * [Reconnecting-Websocket](https://github.com/joewalnes/reconnecting-websocket) by Joe Walnes
 
-BitListen uses these APIs:
+This project uses these APIs:
 
-* [Toshi.io](https://toshi.io/docs/) WebSocket API (For Transactions)
+* [insight.dash.siampm.com](http://insight.dash.siampm.com) WebSocket API (For Transactions)
 * [Bitstamp.net](https://www.bitstamp.net/) WebSocket API (For Price Ticker)
+* [Poloniex.com](https://poloniex.com/) WebSocket API (For Price Ticker)
 
 ### License ###
 
 If you distribute this project in part or in full, please attribute with a link to [the GitHub page](https://github.com/MaxLaumeister/bitlisten). This software is available under The MIT License, reproduced below.
 
-Copyright (c) 2014 Maximillian Laumeister
+Copyright (c) 2014 Maximillian Laumeister  
+Copyright (c) 2016 UdjinM6
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

@@ -14,89 +14,85 @@ TransactionSocket.init = function() {
 	if (TransactionSocket.connection)
 		TransactionSocket.connection.close();
 
-	if ('WebSocket' in window) {
-		var connection = new ReconnectingWebSocket('wss://bitcoin.toshi.io');
-		TransactionSocket.connection = connection;
+	var connection = io.connect('http://insight.dash.siampm.com:3000');
+	TransactionSocket.connection = connection;
 
-		StatusBox.reconnecting("blockchain");
+	StatusBox.reconnecting("blockchain");
 
-		connection.onopen = function() {
-			console.log('Toshi.io: Connection open!');
-			StatusBox.connected("blockchain");
-			var newTransactions = {
-				"subscribe" : "transactions"
-			};
-			var newBlocks = {
-				"subscribe" : "blocks"
-			};
-			connection.send(JSON.stringify(newTransactions));
-			connection.send(JSON.stringify(newBlocks));
-			connection.send(JSON.stringify({
-				"fetch" : "latest_transaction"
-			}));
-			// Display the latest transaction so the user sees something.
-		};
+	connection.on('connect', function () {
+		console.log('insight.dash.siampm.com: Connection open!');
+		StatusBox.connected("blockchain");
+		connection.emit('subscribe', 'inv');
+	});
 
-		connection.onclose = function() {
-			console.log('Toshi.io: Connection closed');
-			if ($("#blockchainCheckBox").prop("checked"))
-				StatusBox.reconnecting("blockchain");
-			else
-				StatusBox.closed("blockchain");
-		};
+	connection.on('disconnect', function() {
+		console.log('insight.dash.siampm.com: Connection closed');
+		if ($("#blockchainCheckBox").prop("checked"))
+			StatusBox.reconnecting("blockchain");
+		else
+			StatusBox.closed("blockchain");
+	});
 
-		connection.onerror = function(error) {
-			console.log('Toshi.io: Connection Error: ' + error);
-		};
+	connection.on('error', function(error) {
+		console.log('insight.dash.siampm.com: Connection Error: ' + error);
+	});
 
-		connection.onmessage = function(e) {
-			var response = JSON.parse(e.data);
 
-			// New Transaction
-			if (response.subscription == "transactions" || response.fetched == "latest_transaction") {
-				var transacted = 0;
-
-				for (var i = 0; i < response.data.outputs.length; i++) {
-					transacted += response.data.outputs[i].amount;
-				}
-
-				var bitcoins = transacted / satoshi;
-				//console.log("Transaction: " + bitcoins + " BTC");
-
-				var donation = false;
-                var soundDonation = false;
-				var outputs = response.data.outputs;
-				for (var j = 0; j < outputs.length; j++) {
-					if ((outputs[j].addresses[0]) == DONATION_ADDRESS) {
-						bitcoins = response.data.outputs[j].amount / satoshi;
-						new Transaction(bitcoins, true);
-						return;
-					}
-				}
-
-				setTimeout(function() {
-					new Transaction(bitcoins);
-				}, Math.random() * DELAY_CAP);
-
-			} else if (response.subscription == "blocks" || response.fetched == "latest_block") {
-				var blockHeight = response.data.height;
-				var transactions = response.data.transactions_count;
-				var volumeSent = response.data.total_out;
-				var blockSize = response.data.size;
-				// Filter out the orphaned blocks.
-				if (blockHeight > lastBlockHeight) {
-					lastBlockHeight = blockHeight;
-					console.log("New Block");
-					new Block(blockHeight, transactions, volumeSent, blockSize);
-				}
-			}
-
-		};
-	} else {
-		//WebSockets are not supported.
-		console.log("No websocket support.");
-		StatusBox.nosupport("blockchain");
+	function newTx(bitcoins) {
+		new Transaction(bitcoins);
 	}
+
+	connection.on("tx", function(data){
+		// console.log('insight.dash.siampm.com: tx data: ' + JSON.stringify(data) + ' vout length: ' + data.vout.length);
+
+		// Dash volume is quite low - show bubble for every output
+		// var transacted = 0;
+		var vout = data.vout;
+		for (var i = 0; i < vout.length; i++) {
+			// transacted += vout[i][Object.keys(vout[i])];
+			// console.log('insight.dash.siampm.com: tx data: ' + Object.keys(vout[i]) + ' ' + vout[i][Object.keys(vout[i])]);
+			var bitcoins = vout[i][Object.keys(vout[i])] / satoshi;
+			if (Object.keys(vout[i]) == DONATION_ADDRESS)
+				new Transaction(bitcoins, true);
+			else
+				setTimeout(newTx(bitcoins), Math.random() * DELAY_CAP);
+			// console.log('insight.dash.siampm.com: tx data: ' + transacted);
+		}
+
+		// var bitcoins = transacted / satoshi;
+		// var bitcoins = data.valueOut;
+		// console.log("Transaction: " + bitcoins + " BTC");
+
+		// var donation = false;
+		// var soundDonation = false;
+		// var vout = data.vout;
+		// for (var j = 0; j < vout.length; j++) {
+		// 	if (Object.keys(vout[j]) == DONATION_ADDRESS) {
+		// 		bitcoins = vout[j][[Object.keys(vout[j])]] / satoshi;
+		// 		new Transaction(bitcoins, true);
+		// 		return;
+		// 	}
+		// }
+
+		// setTimeout(function() {
+		// 	new Transaction(bitcoins);
+		// }, Math.random() * DELAY_CAP);
+	});
+	// connection.on("block", function(data){
+	// 	console.log('insight.dash.siampm.com: block data: ' + data);
+
+	// no such info in insight-api :(
+	// 	var blockHeight = data.height;
+	// 	var transactions = data.tx.length;
+	// 	// var volumeSent = data.total_out;
+	// 	var volumeSent = data.difficulty; // TODO: err..
+	// 	var blockSize = data.size;
+	// 	// Filter out the orphaned blocks.
+	// 	if (blockHeight > lastBlockHeight) {
+	// 		lastBlockHeight = blockHeight;
+	// 		console.log("New Block");
+	// 		new Block(blockHeight, transactions, volumeSent, blockSize);
+	// 	}
 };
 
 TransactionSocket.close = function() {
