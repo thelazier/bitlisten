@@ -78,21 +78,25 @@ TransactionSocket.init = function() {
 		// 	new Transaction(bitcoins);
 		// }, Math.random() * DELAY_CAP);
 	});
-	// connection.on("block", function(data){
-	// 	console.log('insight.dash.siampm.com: block data: ' + data);
-
-	// no such info in insight-api :(
-	// 	var blockHeight = data.height;
-	// 	var transactions = data.tx.length;
-	// 	// var volumeSent = data.total_out;
-	// 	var volumeSent = data.difficulty; // TODO: err..
-	// 	var blockSize = data.size;
-	// 	// Filter out the orphaned blocks.
-	// 	if (blockHeight > lastBlockHeight) {
-	// 		lastBlockHeight = blockHeight;
-	// 		console.log("New Block");
-	// 		new Block(blockHeight, transactions, volumeSent, blockSize);
-	// 	}
+	connection.on("block", function(blockHash){
+		// console.log('insight.dash.siampm.com: blockHash: ' + blockHash);
+		$.getJSON('http://insight.dash.siampm.com/api/block/' + blockHash, function(blockData) {
+			// console.log('insight.dash.siampm.com: blockData: ' + JSON.stringify(blockData));
+			var blockHeight = blockData.height;
+			var transactions = blockData.tx.length;
+			// no such info in insight-api :(
+			// var volumeSent = blockData.total_out;
+			// let's show difficulty instead
+			var difficulty = blockData.difficulty;
+			var blockSize = blockData.size;
+			// Filter out the orphaned blocks.
+			if (blockHeight > lastBlockHeight) {
+				lastBlockHeight = blockHeight;
+				console.log("New Block");
+				new Block(blockHeight, transactions, /*volumeSent*/difficulty, blockSize);
+			}
+		});
+	});
 };
 
 TransactionSocket.close = function() {
