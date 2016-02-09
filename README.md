@@ -26,7 +26,7 @@ This project uses these libraries:
 
 This project uses these APIs:
 
-* [insight.dash.siampm.com](http://insight.dash.siampm.com) WebSocket API (For Transactions)
+* [insight.masternode.io:3000](http://insight.masternode.io:3000) WebSocket API (For Transactions)
 * [Bitstamp.net](https://www.bitstamp.net/) WebSocket API (For Price Ticker)
 * [Poloniex.com](https://poloniex.com/) WebSocket API (For Price Ticker)
 
