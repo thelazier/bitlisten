@@ -68,8 +68,11 @@ $(document).ready(function() {
 				volume = Math.random() * 1000;
 			}
 
-			if (Math.random() < 0.5)
-				new Transaction(volume, false);
+			var randType = Math.random();
+			if (randType < 0.5)
+				new Transaction(volume, Math.random() < 0.1);
+			else if (randType < 0.8)
+				new Transaction(volume, false, null, null, true);
 			else
 				new Transaction(volume, false, volume * 75, 'USD');
 		}

@@ -38,11 +38,11 @@ TransactionSocket.init = function() {
 	});
 
 
-	function newTx(bitcoins) {
-		new Transaction(bitcoins);
+	function newTx(bitcoins, isDonation, currency, currencyName, isIX) {
+		new Transaction(bitcoins, isDonation, currency, currencyName, isIX);
 	}
 
-	connection.on("tx", function(data){
+	function spawnTransaction(data, isIX){
 		// console.log('insight.masternode.io:3000: tx data: ' + JSON.stringify(data) + ' vout length: ' + data.vout.length);
 
 		// Dash volume is quite low - show bubble for every output
@@ -52,10 +52,10 @@ TransactionSocket.init = function() {
 			// transacted += vout[i][Object.keys(vout[i])];
 			// console.log('insight.masternode.io:3000: tx data: ' + Object.keys(vout[i]) + ' ' + vout[i][Object.keys(vout[i])]);
 			var bitcoins = vout[i][Object.keys(vout[i])] / satoshi;
-			if (Object.keys(vout[i]) == DONATION_ADDRESS)
-				new Transaction(bitcoins, true);
-			else
-				setTimeout(newTx(bitcoins), Math.random() * DELAY_CAP);
+			setTimeout(newTx(bitcoins,
+							Object.keys(vout[i]) == DONATION_ADDRESS,
+							'', '', isIX),
+				isIX ? 0 : Math.random() * DELAY_CAP);
 			// console.log('insight.masternode.io:3000: tx data: ' + transacted);
 		}
 
@@ -77,7 +77,16 @@ TransactionSocket.init = function() {
 		// setTimeout(function() {
 		// 	new Transaction(bitcoins);
 		// }, Math.random() * DELAY_CAP);
+	}
+
+	connection.on("tx", function(data){
+		spawnTransaction(data, false);
 	});
+
+	connection.on("ix", function(data){
+		spawnTransaction(data, true);
+	});
+
 	connection.on("block", function(blockHash){
 		// console.log('insight.masternode.io:3000: blockHash: ' + blockHash);
 		$.getJSON('http://insight.masternode.io:3000/api/block/' + blockHash, function(blockData) {

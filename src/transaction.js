@@ -2,7 +2,7 @@
  *  @constructor
  *  @extends Floatable
  */
-function Transaction(bitcoins, highlight, currency, currencyName) {
+function Transaction(bitcoins, isDonation, currency, currencyName, isIX) {
 	if (document.visibilityState === "visible") {
 		Floatable.call(this);
 
@@ -20,11 +20,16 @@ function Transaction(bitcoins, highlight, currency, currencyName) {
 	        bitcoinString = "<span class='bitcoinsymbol'>&nbsp;&nbsp;&nbsp;</span>" + bitcoinVal;
 	    }
 	
-		if (!highlight) {
+		if(isIX) {
+			this.velocity.y = -2;
+			this.addText('<span style="color: cyan;">' + bitcoinString + '</span><br />');
+		} else
 			this.addText(bitcoinString);
-		} else {
-			this.addText('<span style="color: yellow;">' + bitcoinString + '</span><br /><span style="color: cyan;">Donation</span><br /><span style="color: lime;">Thanks!</span>');
+
+		if (isDonation) {
+			this.addText('<br /><span style="color: yellow;">Donation</span><br /><span style="color: lime;">Thanks!</span>');
 		}
+
 		if (currency && currencyName) {
 			this.addText('<br />' + currency.toFixed(2) + ' ' + currencyName);
 		}
