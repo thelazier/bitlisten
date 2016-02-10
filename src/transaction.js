@@ -22,7 +22,7 @@ function Transaction(bitcoins, isDonation, currency, currencyName, isIX) {
 	
 		if(isIX) {
 			this.velocity.y = -2;
-			this.addText('<span style="color: cyan;">' + bitcoinString + '</span><br />');
+			this.addText('<span style="color: cyan;">' + bitcoinString + '</span>');
 		} else
 			this.addText(bitcoinString);
 

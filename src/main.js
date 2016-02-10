@@ -80,6 +80,21 @@ $(document).ready(function() {
 	// Spam the following line into console, it's kind of fun.
 	// new Block(228158, 270, 100 * satoshi, 153 * 1024);
 	
+	// look for url params
+	urlParam = function(name){
+		var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+		if (results===null){
+			return null;
+		}
+		else{
+			return results[1] || 0;
+		}
+	};
+
+	if(urlParam('hide') == 1) {
+		toggleInterface();
+	}
+
 	switchExchange("poloniex");
 	
 	// Attach mouseover qr
