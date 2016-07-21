@@ -14,19 +14,19 @@ TransactionSocket.init = function() {
 	if (TransactionSocket.connection)
 		TransactionSocket.connection.close();
 
-	var connection = io.connect('http://insight.masternode.io:3000');
+	var connection = io.connect('https://insight.dash.siampm.com');
 	TransactionSocket.connection = connection;
 
 	StatusBox.reconnecting("blockchain");
 
 	connection.on('connect', function () {
-		console.log('insight.masternode.io:3000: Connection open!');
+		console.log('insight.dash.siampm.com: Connection open!');
 		StatusBox.connected("blockchain");
 		connection.emit('subscribe', 'inv');
 	});
 
 	connection.on('disconnect', function() {
-		console.log('insight.masternode.io:3000: Connection closed');
+		console.log('insight.dash.siampm.com: Connection closed');
 		if ($("#blockchainCheckBox").prop("checked"))
 			StatusBox.reconnecting("blockchain");
 		else
@@ -34,7 +34,7 @@ TransactionSocket.init = function() {
 	});
 
 	connection.on('error', function(error) {
-		console.log('insight.masternode.io:3000: Connection Error: ' + error);
+		console.log('insight.dash.siampm.com: Connection Error: ' + error);
 	});
 
 
@@ -43,20 +43,20 @@ TransactionSocket.init = function() {
 	}
 
 	function spawnTransaction(data, isIX){
-		// console.log('insight.masternode.io:3000: tx data: ' + JSON.stringify(data) + ' vout length: ' + data.vout.length);
+		// console.log('insight.dash.siampm.com: tx data: ' + JSON.stringify(data) + ' vout length: ' + data.vout.length);
 
 		// Dash volume is quite low - show bubble for every output
 		// var transacted = 0;
 		var vout = data.vout;
 		for (var i = 0; i < vout.length; i++) {
 			// transacted += vout[i][Object.keys(vout[i])];
-			// console.log('insight.masternode.io:3000: tx data: ' + Object.keys(vout[i]) + ' ' + vout[i][Object.keys(vout[i])]);
+			// console.log('insight.dash.siampm.com: tx data: ' + Object.keys(vout[i]) + ' ' + vout[i][Object.keys(vout[i])]);
 			var bitcoins = vout[i][Object.keys(vout[i])] / satoshi;
 			setTimeout(newTx(bitcoins,
 							Object.keys(vout[i]) == DONATION_ADDRESS,
 							'', '', isIX),
 				isIX ? 0 : Math.random() * DELAY_CAP);
-			// console.log('insight.masternode.io:3000: tx data: ' + transacted);
+			// console.log('insight.dash.siampm.com: tx data: ' + transacted);
 		}
 
 		// var bitcoins = transacted / satoshi;
@@ -88,9 +88,9 @@ TransactionSocket.init = function() {
 	});
 
 	connection.on("block", function(blockHash){
-		// console.log('insight.masternode.io:3000: blockHash: ' + blockHash);
-		$.getJSON('http://insight.masternode.io:3000/api/block/' + blockHash, function(blockData) {
-			// console.log('insight.masternode.io:3000: blockData: ' + JSON.stringify(blockData));
+		// console.log('insight.dash.siampm.com: blockHash: ' + blockHash);
+		$.getJSON('https://insight.dash.siampm.com/api/block/' + blockHash, function(blockData) {
+			// console.log('insight.dash.siampm.com: blockData: ' + JSON.stringify(blockData));
 			var blockHeight = blockData.height;
 			var transactions = blockData.tx.length;
 			// no such info in insight-api :(
